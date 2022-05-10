@@ -17,7 +17,13 @@
 
 extern float __llvm_amdgcn_global_atomic_fadd_f32_p1f32_f32(__global float *, float) __asm("llvm.amdgcn.global.atomic.fadd.f32.p1f32.f32");
 
-__attribute__((target("atomic-fadd-insts"))) static void
+#if __clang_major__ >= 15
+#define __ATOMIC_RTN_INSTS __attribute__((target("atomic-fadd-rtn-insts")))
+#else
+#define __ATOMIC_RTN_INSTS __attribute__((target("atomic-fadd-insts")))
+#endif
+
+__ATOMIC_RTN_INSTS static void
 global_atomic_fadd(__global float *p, float v)
 {
     __llvm_amdgcn_global_atomic_fadd_f32_p1f32_f32(p, v);
